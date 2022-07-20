@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe RentalScheduler do
   describe '#schedule' do
-    subject { described_class.new(rental).schedule }
+    subject { described_class.new(rental).call }
     context 'should schedule a rental' do
       let(:rental) do
         build(:rental, start_date: 1.day.from_now, end_date: 3.days.from_now,
@@ -12,7 +12,7 @@ describe RentalScheduler do
       end
 
       it do
-        is_expected.to be true
+        is_expected.to be_success
         expect(rental).to be_persisted
         expect(rental).to be_scheduled
         expect(rental.price_projection).to_not be_zero
@@ -26,7 +26,7 @@ describe RentalScheduler do
       end
 
       it do
-        is_expected.to be false
+        is_expected.to be_failure
         expect(rental).to_not be_persisted
         expect(rental).to be_scheduled
       end
