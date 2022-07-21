@@ -12,6 +12,7 @@ class RentalScheduler
     rental.status = :scheduled
     rental.price_projection = calculator.new(rental).calculate
     rental.save
+    errors.push(*rental.errors.full_messages)
   end
 
   private

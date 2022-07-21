@@ -39,7 +39,7 @@ describe RentalScheduler do
       end
 
       it do
-        is_expected.to be false
+        is_expected.to be_failure
         expect(rental).to_not be_persisted
         expect(rental).to be_scheduled
       end
