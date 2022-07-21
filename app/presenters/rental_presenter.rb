@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class RentalPresenter < SimpleDelegator
+  def initialize(rental, user = nil, policy = RentalPolicy)
+    super(rental)
+    @user   = user
+    @policy = policy
+  end
+
   def status
     return '' unless super
 
@@ -8,9 +14,15 @@ class RentalPresenter < SimpleDelegator
     content_tag :span, t(super), class: "badge bg-#{color_class}"
   end
 
+  def confirmation_form
+    return { plain: '' } unless policy.new(user, self).allowed?
+
+    { partial: 'rentals/confirmation_form' }
+  end
+
   private
 
-  attr_reader :rental
+  attr_reader :rental, :user, :policy
 
   STATUS_COLOR = {
     scheduled: 'warning',

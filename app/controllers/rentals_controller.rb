@@ -26,7 +26,7 @@ class RentalsController < ApplicationController
   end
 
   def confirm
-    @rental = Rental.find(params[:id])
+    @rental = RentalPresenter.new(Rental.find(params[:id]), current_user)
     if (@car = Car.find_by(id: params[:car_id]))
       @rental.rental_items.create(rentable: @car, daily_rate:
                                   @car.category.daily_rate)
@@ -53,11 +53,12 @@ class RentalsController < ApplicationController
   end
 
   def show
-    @rental = RentalPresenter.new(Rental.find(params[:id]))
+    @rental = RentalPresenter.new(Rental.find(params[:id]), current_user)
   end
 
   def search
-    @rental = Rental.find_by(reservation_code: params[:q])
+    rental = Rental.find_by(reservation_code: params[:q])
+    @rental = rental && RentalPresenter.new(rental, current_user)
     return redirect_to review_rental_path(@rental) if @rental
 
     flash[:alert] = 'Não foi possível encontrar a locação'
@@ -65,7 +66,7 @@ class RentalsController < ApplicationController
   end
 
   def review
-    @rental = Rental.find(params[:id])
+    @rental = RentalPresenter.new(Rental.find(params[:id]), current_user)
     @rental.in_review!
     @cars = @rental.available_cars
     @addons = Addon.joins(:addon_items).where(addon_items: { status: :available }).group(:id)
@@ -73,7 +74,7 @@ class RentalsController < ApplicationController
   end
 
   def start
-    @rental = Rental.find(params[:id])
+    @rental = RentalPresenter.new(Rental.find(params[:id]), current_user)
     @rental.ongoing!
     redirect_to @rental
   end
@@ -88,6 +89,6 @@ class RentalsController < ApplicationController
 
   def authorize_user!
     @rental = Rental.find(params[:id])
-    redirect_to @rental unless current_user.admin? || @rental.subsidiary == current_subsidiary
+    redirect_to @rental unless RentalPolicy.new(current_user, @rental).allowed?
   end
 end
