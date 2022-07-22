@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RentalPresenter < SimpleDelegator
-  def initialize(rental, user = nil, policy = RentalPolicy)
+  def initialize(rental, user = NilUser.new, policy = RentalPolicy)
     super(rental)
     @user   = user
     @policy = policy

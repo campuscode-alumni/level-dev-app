@@ -10,4 +10,8 @@ class ApplicationController < ActionController::Base
   def current_subsidiary
     current_user.subsidiary if current_user.user?
   end
+
+  def current_user
+    super || NilUser.new
+  end
 end
