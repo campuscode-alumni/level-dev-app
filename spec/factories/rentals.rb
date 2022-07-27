@@ -8,6 +8,7 @@ FactoryBot.define do
     category
     subsidiary
     status { :scheduled }
+    price_projection { 100 }
 
     after(:build) do |rental|
       car_model = create(:car_model, category: rental.category)
