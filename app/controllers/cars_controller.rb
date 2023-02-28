@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class CarsController < ApplicationController
+  def show
+    @car = Car.find(params[:id])
+  end
+
   def new
     @car = Car.new
     @car_models = CarModel.all
@@ -12,10 +16,6 @@ class CarsController < ApplicationController
 
     @car_models = CarModel.all
     render :new
-  end
-
-  def show
-    @car = Car.find(params[:id])
   end
 
   private

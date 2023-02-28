@@ -7,8 +7,16 @@ class ManufacturesController < ApplicationController
     @manufactures = Manufacture.all
   end
 
+  def show
+    @manufacture = Manufacture.find(params[:id])
+  end
+
   def new
     @manufacture = Manufacture.new
+  end
+
+  def edit
+    @manufacture = Manufacture.find(params[:id])
   end
 
   def create
@@ -18,14 +26,6 @@ class ManufacturesController < ApplicationController
     else
       render :new
     end
-  end
-
-  def show
-    @manufacture = Manufacture.find(params[:id])
-  end
-
-  def edit
-    @manufacture = Manufacture.find(params[:id])
   end
 
   def update

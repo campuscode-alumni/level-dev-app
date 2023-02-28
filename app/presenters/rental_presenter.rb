@@ -1,7 +1,18 @@
+# frozen_string_literal: true
+
 class RentalPresenter
+  delegate :content_tag, :t, to: :helpers
+
   def initialize(rental)
     @rental = rental
   end
+
+  def status
+    color_class = STATUS_COLORS.fetch(rental.status&.to_sym, 'primary')
+    content_tag :span, t(rental.status, default: 'Status não existe'), class: "badge bg-#{color_class}"
+  end
+
+  private
 
   STATUS_COLORS = {
     scheduled: 'primary',
@@ -9,15 +20,11 @@ class RentalPresenter
     finalized: 'success'
   }.freeze
 
-  def status
-    color_class = STATUS_COLORS.fetch(rental.status&.to_sym, 'primary')
-    "<span class=\"badge bg-#{color_class}\">#{I18n.t(rental.status, default: 'Status não existe')}</span>"
-    # content_tag :span, I18n.t(rental.status, default: 'Status não existe'), class: "badge bg-#{color_class}"
-  end
-
-  private
-
   attr_reader :rental
+
+  def helpers
+    ApplicationController.helpers
+  end
 
   def method_missing(event, *args, &block)
     rental.public_send(event, *args, &block)

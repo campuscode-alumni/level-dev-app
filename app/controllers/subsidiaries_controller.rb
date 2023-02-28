@@ -21,6 +21,11 @@ class SubsidiariesController < ApplicationController
     @subsidiary.build_address
   end
 
+  def edit
+    @subsidiary = Subsidiary.find(params[:id])
+    @address = Address.all
+  end
+
   def create
     @subsidiary = Subsidiary.new(subsidiary_params)
     @categories = Category.all
@@ -31,11 +36,6 @@ class SubsidiariesController < ApplicationController
     return redirect_to @subsidiary if @subsidiary.save
 
     render :new
-  end
-
-  def edit
-    @subsidiary = Subsidiary.find(params[:id])
-    @address = Address.all
   end
 
   def update

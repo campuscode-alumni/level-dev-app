@@ -16,6 +16,10 @@ class CorporateClientsController < ApplicationController
     @corporate_client.build_address
   end
 
+  def edit
+    @corporate_client = CorporateClient.find(params[:id])
+  end
+
   def create
     @corporate_client = CorporateClient.new(corporate_client_params)
     if @corporate_client.save
@@ -23,10 +27,6 @@ class CorporateClientsController < ApplicationController
     else
       render :new
     end
-  end
-
-  def edit
-    @corporate_client = CorporateClient.find(params[:id])
   end
 
   def update

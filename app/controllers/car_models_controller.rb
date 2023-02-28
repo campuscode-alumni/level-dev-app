@@ -18,6 +18,13 @@ class CarModelsController < ApplicationController
     @categories = Category.all
   end
 
+  def edit
+    @car_model = CarModel.find(params[:id])
+    @manufactures = Manufacture.all
+    @fuel_types = FuelType.all
+    @categories = Category.all
+  end
+
   def create
     @car_model = CarModel.new(car_model_params)
     return redirect_to @car_model if @car_model.save
@@ -26,13 +33,6 @@ class CarModelsController < ApplicationController
     @fuel_types = FuelType.all
     @categories = Category.all
     render :new
-  end
-
-  def edit
-    @car_model = CarModel.find(params[:id])
-    @manufactures = Manufacture.all
-    @fuel_types = FuelType.all
-    @categories = Category.all
   end
 
   def update

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RentalHelper
   STATUS_COLORS = {
     scheduled: 'primary',

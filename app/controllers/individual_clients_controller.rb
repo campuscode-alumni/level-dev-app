@@ -16,6 +16,10 @@ class IndividualClientsController < ApplicationController
     @individual_client.build_address
   end
 
+  def edit
+    @individual_client = IndividualClient.find(params[:id])
+  end
+
   def create
     @individual_client = IndividualClient.new(individual_client_params)
     if @individual_client.save
@@ -23,10 +27,6 @@ class IndividualClientsController < ApplicationController
     else
       render :new
     end
-  end
-
-  def edit
-    @individual_client = IndividualClient.find(params[:id])
   end
 
   def update

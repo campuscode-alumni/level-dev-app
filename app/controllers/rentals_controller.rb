@@ -7,6 +7,10 @@ class RentalsController < ApplicationController
     @rentals = Rental.where(subsidiary: current_subsidiary)
   end
 
+  def show
+    @rental = RentalPresenter.new(Rental.find(params[:id]))
+  end
+
   def new
     @rental = Rental.new
     @clients = Client.all
@@ -53,10 +57,6 @@ class RentalsController < ApplicationController
       @insurances = @rental.category.insurances
       render :review
     end
-  end
-
-  def show
-    @rental = Rental.find(params[:id])
   end
 
   def search
