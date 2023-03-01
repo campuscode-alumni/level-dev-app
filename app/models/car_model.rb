@@ -2,7 +2,7 @@
 
 class CarModel < ApplicationRecord
   has_one_attached :photo
-  belongs_to :manufacture
+  belongs_to :manufacture, optional: true
   belongs_to :fuel_type
   belongs_to :category
   has_many :cars, dependent: :destroy
