@@ -12,11 +12,12 @@ class Rental < ApplicationRecord
   accepts_nested_attributes_for :rental_items
   enum status: { scheduled: 0, in_review: 5, ongoing: 10, finalized: 15 }
 
-  def calculate_price_projection
-    return 0 unless start_date && end_date && category
+  def calculate_price_projection!
+    self.price_projection = 0
+    return unless start_date && end_date && category
 
     days = (end_date - start_date).to_i
-    days * category.daily_rate
+    self.price_projection = days * category.daily_rate
   end
 
   def calculate_final_price
