@@ -19,7 +19,8 @@ class RentalsController < ApplicationController
 
   def create
     @rental = Rental.new(**rental_params, subsidiary: current_subsidiary)
-    if RentalScheduler.new(@rental).schedule
+    result = RentalScheduler.new(@rental).call
+    if result.success?
       redirect_to rental_path(@rental.id)
     else
       @clients = Client.all
