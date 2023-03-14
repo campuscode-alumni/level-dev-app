@@ -22,5 +22,11 @@ describe RentalPolicy do
       rental = build(:rental)
       expect(RentalPolicy.new(user, rental)).to_not be_allowed
     end
+
+    it 'should be false with NilUser' do
+      user   = NilUser.new
+      rental = build(:rental)
+      expect(RentalPolicy.new(user, rental)).to_not be_allowed
+    end
   end
 end

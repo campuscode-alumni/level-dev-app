@@ -3,7 +3,7 @@
 class RentalPresenter < SimpleDelegator
   delegate :content_tag, :t, :render, to: :helpers
 
-  def initialize(rental, user, policy = RentalPolicy)
+  def initialize(rental, user = NilUser.new, policy = RentalPolicy)
     super(rental)
     @user   = user
     @policy = policy
