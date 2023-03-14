@@ -2,13 +2,13 @@
 
 class RentalsController < ApplicationController
   before_action :authorize_user!, only: %i[confirm]
+  before_action :set_rental, only: %i[show confirm review start]
 
   def index
     @rentals = Rental.where(subsidiary: current_subsidiary)
   end
 
   def show
-    @rental = RentalPresenter.new(Rental.find(params[:id]))
   end
 
   def new
@@ -30,7 +30,6 @@ class RentalsController < ApplicationController
   end
 
   def confirm
-    @rental = Rental.find(params[:id])
     if (@car = Car.find_by(id: params[:car_id]))
       @rental.rental_items.create(rentable: @car, daily_rate:
                                   @car.category.daily_rate)
@@ -65,7 +64,6 @@ class RentalsController < ApplicationController
   end
 
   def review
-    @rental = Rental.find(params[:id])
     @rental.in_review!
     @cars = @rental.available_cars
     @addons = Addon.joins(:addon_items).where(addon_items: { status: :available }).group(:id)
@@ -73,12 +71,15 @@ class RentalsController < ApplicationController
   end
 
   def start
-    @rental = Rental.find(params[:id])
     @rental.ongoing!
     redirect_to @rental
   end
 
   private
+
+  def set_rental
+    @rental = RentalPresenter.new(Rental.find(params[:id]), current_user)
+  end
 
   def rental_params
     params.require(:rental).permit(:category_id, :client_id, :start_date,
@@ -88,6 +89,10 @@ class RentalsController < ApplicationController
 
   def authorize_user!
     @rental = Rental.find(params[:id])
-    redirect_to @rental unless current_user.admin? || @rental.subsidiary == current_subsidiary
+    redirect_to @rental unless authorized?
+  end
+
+  def authorized?
+    RentalPolicy.new(current_user, @rental).allowed?
   end
 end

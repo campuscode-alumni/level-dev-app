@@ -1,11 +1,24 @@
 # frozen_string_literal: true
 
 class RentalPresenter < SimpleDelegator
-  delegate :content_tag, :t, to: :helpers
+  delegate :content_tag, :t, :render, to: :helpers
+
+  def initialize(rental, user, policy = RentalPolicy)
+    super(rental)
+    @user   = user
+    @policy = policy
+  end
 
   def status
     color_class = STATUS_COLORS.fetch(super&.to_sym, 'primary')
     content_tag :span, t(super, default: 'Status não existe'), class: "badge bg-#{color_class}"
+  end
+
+  # TODO: substituir por view context
+  def confirmation_form
+    return { plain: '' } unless policy.new(user, self).allowed?
+
+    { partial: 'rentals/confirmation_form' }
   end
 
   private
@@ -16,7 +29,7 @@ class RentalPresenter < SimpleDelegator
     finalized: 'success'
   }.freeze
 
-  attr_reader :rental
+  attr_reader :user, :policy
 
   def helpers
     ApplicationController.helpers
