@@ -8,6 +8,7 @@ FactoryBot.define do
     category
     subsidiary
     status { nil }
+    price_projection { 10 }
 
     trait :without_callbacks do
       after(:build) do |rental|

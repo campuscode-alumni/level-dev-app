@@ -6,6 +6,7 @@ describe RentalByCategoryAndSubsidiaryQuery do
     paraiso = create(:subsidiary, name: 'Paraiso')
     category_a = create(:category, name: 'A')
     category_b = create(:category, name: 'B')
+    allow_any_instance_of(Rental).to receive(:cars_available)
     create_list(:rental, 2, category: category_a, subsidiary: paulista,
                 start_date: 10.days.from_now, end_date: 15.days.from_now)
     create_list(:rental, 3, category: category_b, subsidiary: paraiso,
@@ -16,6 +17,15 @@ describe RentalByCategoryAndSubsidiaryQuery do
            start_date: 5.days.from_now, end_date: 6.days.from_now)
 
     result = described_class.new(start_date: 10.days.from_now, end_date: 15.days.from_now).call
-    expect(result.count).to eq(7)
+
+    # [
+    #   { subsidiary: 'Paraiso', category: 'B', total: 3 },
+    #   { subsidiary: 'Paulista', category: 'A', total: 2 },
+    #   { subsidiary: 'Paraiso', category: 'A', total: 2 }
+    # ]
+    expect(result.count).to eq(3)
+    expect(result.first.symbolize_keys!).to include(subsidiary: 'Paraiso', category: 'B', total: 3)
+    expect(result.second.symbolize_keys!).to include(subsidiary: 'Paraiso', category: 'A', total: 2)
+    expect(result.third.symbolize_keys!).to include(subsidiary: 'Paulista', category: 'A', total: 2)
   end
 end
